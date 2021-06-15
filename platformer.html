@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title> Platformer </title>
+</head>
+<body>
+<canvas id="canvas" width="400" height="400"> </canvas>
+<script>
+var canv = document.getElementById('canvas');
+const ctx = canv.getContext('2d');
+// platforms
+	
+	function Platform(x, y, width, height){
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+			this.xArray = [];
+			for (var i = 0; i < width; i++) {
+				this.xArray[i] = this.x + i; 
+			}
+			 
+	}
+
+
+	Platform.prototype.drawPlat = function() {
+		ctx.fillStyle = "green";
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	};
+ var p = new Platform(70, 350, 200, 4);
+ var p2 = new Platform(70, 150, 20, 10);
+//player
+	
+var speed = 30;	
+var x = 90;
+var y = 100;
+var xV = 3;
+var yV = 3;
+let onG = true;
+	
+	function drawPlayer(){
+		ctx.fillStyle = "darkblue"
+		ctx.fillRect(x, y, 10, -20);
+	}
+	
+	drawPlayer();
+	var Player = function(){
+		y++;
+		if (y > 400 - 5) {
+			y--;
+			onG = true;
+		}
+		for (var i = 0; i < p.xArray.length; i++) {
+			if (y === p.y && x === p.xArray[i] || x === p.x) {
+				y--;
+				onG = true;
+			}
+		}
+			
+	}
+		
+	
+
+// event listeners
+
+ctx.strokeRect(0, 0, canv.width, canv.height);
+ctx.lineWidth = 10;
+ctx.strokeStyle = "grey"
+var keys = {
+	"left": 37,
+	"right": 39,
+	"up": 38,
+	"down": 40
+};
+function listener(type, funcT){
+		document.addEventListener(type, funcT);
+}
+function keyUp(event){
+
+}
+function keyDown(event){
+	if (event.keyCode === keys["right"]) {
+				x = x+xV;
+	}else if (event.keyCode === keys["left"]) {
+				x = x + -xV;
+	}
+	if (event.keyCode === 32 && onG) {
+			for (var i = 0; i < 20; i++) {
+				y -= yV;
+			}
+
+			onG = false;
+		}
+}
+
+
+
+
+var intervalId = setInterval(() => {
+	ctx.clearRect(0, 0, canv.width, canv.height);
+	ctx.strokeRect(0, 0, canv.width, canv.height);
+
+	drawPlayer();
+	Player();
+	p.drawPlat();
+	p2.drawPlat();
+	listener("keydown", keyDown);
+	listener("keyup", keyUp);
+}, 10);
+
+</script>
+</body>
+</html>
